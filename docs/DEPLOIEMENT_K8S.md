@@ -45,6 +45,14 @@ helm install workshop-api helm/workshop-api-chart \
   -f helm/workshop-api-chart/values-staging.yaml -n staging --create-namespace
 ```
 
+### Recommandé (production) : mot de passe hors des values versionnées
+
+```bash
+helm install workshop-api helm/workshop-api-chart \
+  -f helm/workshop-api-chart/values-staging.yaml -n staging --create-namespace \
+  --set db.password="$DB_PASSWORD"     # $DB_PASSWORD injecté par le CI / le secret store
+```
+
 ### Différences dev / staging
 
 | Paramètre | `dev` | `staging` |
@@ -57,6 +65,24 @@ helm install workshop-api helm/workshop-api-chart \
 
 Le secret est généré **par le chart dans chaque namespace** à partir de la valeur `db.password`
 propre à l'environnement : les identifiants ne sont jamais partagés entre `dev` et `staging`.
+
+### ⚠️ Sécurité des secrets — choix assumé
+
+Les mots de passe présents dans `values.yaml`, `values-dev.yaml` et `values-staging.yaml`
+(`oc2024`, `dev-oc2024`, `staging-Xk92mZ7q`) sont des **valeurs de démonstration jetables**,
+**versionnées sciemment** pour que l'exercice **Minikube local** soit reproductible en une commande.
+Elles ne protègent aucune donnée réelle et ne donnent accès à aucun service exposé.
+
+**En conditions réelles, un mot de passe ne doit jamais être committé.** Le chart est conçu pour
+recevoir le secret par-dessus les values, sans le versionner :
+
+- **`--set db.password="$DB_PASSWORD"`** à l'`helm install` (valeur injectée par le pipeline CI, cf. ci-dessus) ;
+- **[SOPS](https://github.com/getsops/sops)** (ou `helm-secrets`) : values chiffrées, déchiffrées au déploiement ;
+- **[External Secrets Operator](https://external-secrets.io/)** / **Sealed Secrets** : le secret vit dans un
+  coffre (Vault, AWS/GCP Secret Manager…) et n'apparaît jamais dans Git.
+
+Le chart lit toujours `db.password` de la même manière : basculer vers l'une de ces méthodes ne change
+que **l'origine** de la valeur, pas les templates. C'est ce découplage qui rend la mise en production sûre.
 
 ### Validation réalisée
 

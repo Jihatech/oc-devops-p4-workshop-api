@@ -30,7 +30,9 @@ db:
     pullPolicy: IfNotPresent
   port: 5432
   database: workshop-organizer-database
-  # Identifiants de démo — en multi-env, surchargés par values-<env>.yaml (secret distinct par namespace)
+  # Identifiants de DÉMO jetables (usage Minikube local uniquement).
+  # ⚠️ En production, ne PAS versionner : injecter via --set db.password=... / SOPS / External Secrets.
+  #    Voir docs/DEPLOIEMENT_K8S.md § « Sécurité des secrets ».
   username: postgres
   password: oc2024
   persistence:

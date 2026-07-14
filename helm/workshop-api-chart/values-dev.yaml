@@ -12,7 +12,8 @@ app:
       memory: 384Mi
 
 db:
-  # Secret PROPRE à l'environnement dev (différent de staging)
+  # Secret PROPRE à l'environnement dev (différent de staging).
+  # Valeur de DÉMO jetable — en production : --set db.password=... (cf. docs/DEPLOIEMENT_K8S.md).
   username: postgres
   password: dev-oc2024
   resources:

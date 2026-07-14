@@ -12,7 +12,8 @@ app:
       memory: 768Mi
 
 db:
-  # Secret DISTINCT de dev (aucun credential partagé entre environnements)
+  # Secret DISTINCT de dev (aucun credential partagé entre environnements).
+  # Valeur de DÉMO jetable — en production : --set db.password=... / SOPS (cf. docs/DEPLOIEMENT_K8S.md).
   username: postgres
   password: staging-Xk92mZ7q
   resources:
