@@ -25,3 +25,10 @@ effectuée et les correctifs appliqués, conformément aux exigences du parcours
   `GITHUB_TOKEN` intégré (aucun PAT à créer).
 - Le build Docker exclut les tests (`-x test`) : ils sont exécutés séparément dans la CI (Exercice 2).
 - La validation « pipeline vert de bout en bout » se fait après le push sur GitHub (Actions).
+
+### Résultat CI (2026-07-14, après push sur `main`)
+
+- Pipeline **vert de bout en bout** : `test` ✅ → `build` ✅ → `release` ✅.
+- **Release GitHub `1.0.0`** créée automatiquement + tag `1.0.0` + `CHANGELOG.md` généré.
+- Version **synchronisée** : `build.gradle` → `version = '1.0.0'` (commit `chore(release): 1.0.0 [skip ci]`).
+- Image poussée sur GHCR : `ghcr.io/jihatech/oc-devops-p4-workshop-api` (tags `branche-sha`, `1.0.0`, `latest`).
