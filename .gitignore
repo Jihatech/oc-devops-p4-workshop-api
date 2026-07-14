@@ -39,3 +39,5 @@ out/
 ### OpenAPI Generator ###
 .openapi-generator/
 java-generated/
+# Artefacts de tests (run-tests.sh)
+/test-results

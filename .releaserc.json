@@ -1,0 +1,27 @@
+{
+  "branches": ["main"],
+  "tagFormat": "${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      { "changelogFile": "CHANGELOG.md" }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "sed -i \"s/^version = .*/version = '${nextRelease.version}'/\" build.gradle",
+        "publishCmd": "docker build -t ghcr.io/$OWNER_LC/$IMAGE_NAME:${nextRelease.version} -t ghcr.io/$OWNER_LC/$IMAGE_NAME:latest . && docker push ghcr.io/$OWNER_LC/$IMAGE_NAME:${nextRelease.version} && docker push ghcr.io/$OWNER_LC/$IMAGE_NAME:latest"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["build.gradle", "CHANGELOG.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    "@semantic-release/github"
+  ]
+}
