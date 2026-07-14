@@ -14,15 +14,29 @@ spec:
     spec:
       containers:
       - name: workshop-organizer-db
-      # TODO: add postgres image
+        image: postgres:13
         env:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
               name: workshop-organizer-db-secret
               key: username
-       # TODO: add the postgres password variable
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: workshop-organizer-db-secret
+              key: password
         - name: POSTGRES_DB
           value: workshop-organizer-database
+        # Sous-dossier PGDATA pour éviter le conflit "lost+found" du volume monté
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: 5432
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: workshop-organizer-db-pvc
