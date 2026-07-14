@@ -1,17 +1,38 @@
 services:
 
   app:
+    build: .
     image: workshop-organizer
+    container_name: workshop-organizer-app
     ports:
+      # API accessible sur http://localhost:8080
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/workshopsdb"
       SPRING_DATASOURCE_USERNAME: workshops_user
       SPRING_DATASOURCE_PASSWORD: oc2024
+    depends_on:
+      db:
+        # Ne démarre l'app que lorsque PostgreSQL est "healthy" (healthcheck ci-dessous)
+        condition: service_healthy
+    restart: unless-stopped
 
   db:
     image: postgres:13
+    container_name: workshop-organizer-db
     environment:
       POSTGRES_USER: workshops_user
       POSTGRES_PASSWORD: oc2024
       POSTGRES_DB: workshopsdb
+    volumes:
+      # Volume nommé pour la persistance des données
+      - workshop_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U workshops_user -d workshopsdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  workshop_pgdata:

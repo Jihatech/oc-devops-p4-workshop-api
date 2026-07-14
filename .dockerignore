@@ -1,0 +1,14 @@
+.gradle
+build
+.git
+.gitignore
+.idea
+*.iml
+.vscode
+HELP.md
+test-results
+java-generated
+.openapi-generator
+Dockerfile
+.dockerignore
+README.md
