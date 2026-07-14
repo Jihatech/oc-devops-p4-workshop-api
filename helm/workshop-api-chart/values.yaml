@@ -1,0 +1,44 @@
+# Valeurs par défaut du chart workshop-api.
+# Surchargées par values-dev.yaml / values-staging.yaml selon l'environnement.
+
+# Secrets d'accès au registre (vide = image publique GHCR, pas besoin de secret).
+# Exemple : [ { name: ghcr-pull-secret } ]
+imagePullSecrets: []
+
+app:
+  image:
+    repository: ghcr.io/jihatech/oc-devops-p4-workshop-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  port: 8080
+  service:
+    type: LoadBalancer
+    port: 8080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+db:
+  image:
+    repository: postgres
+    tag: "13"
+    pullPolicy: IfNotPresent
+  port: 5432
+  database: workshop-organizer-database
+  # Identifiants de démo — en multi-env, surchargés par values-<env>.yaml (secret distinct par namespace)
+  username: postgres
+  password: oc2024
+  persistence:
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

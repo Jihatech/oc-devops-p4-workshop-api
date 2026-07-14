@@ -32,3 +32,11 @@ effectuée et les correctifs appliqués, conformément aux exigences du parcours
 - **Release GitHub `1.0.0`** créée automatiquement + tag `1.0.0` + `CHANGELOG.md` généré.
 - Version **synchronisée** : `build.gradle` → `version = '1.0.0'` (commit `chore(release): 1.0.0 [skip ci]`).
 - Image poussée sur GHCR : `ghcr.io/jihatech/oc-devops-p4-workshop-api` (tags `branche-sha`, `1.0.0`, `latest`).
+
+## Exercice 3 — Kubernetes & Helm
+
+| Date | Tâche confiée à l'IA | Revue / Vérification | Correctif / Décision |
+|---|---|---|---|
+| 2026-07-14 | Compléter les TODO `k8s/` (image, secret password, PVC, imagePullSecrets). | Déployé sur **Minikube** : pods `Running`, PVC `Bound`, app connectée à PostgreSQL. | **URL datasource corrigée** : le TODO « check the datasource URL » pointait sur `workshop-organizer-db` alors que le Service s'appelle `workshop-organizer-db-service`. Ajout d'un `PGDATA` en sous-dossier (conflit `lost+found` du volume monté) et d'un `initContainer wait-for-db` pour l'ordre PostgreSQL → app. |
+| 2026-07-14 | Créer le chart `workshop-api-chart` (app + PostgreSQL), valeurs extraites. | `helm lint` OK, `--dry-run --debug` conforme, `helm install` réel OK. | Noms de ressources préfixés par `.Release.Name` pour un DNS de service prévisible ; secret généré par le chart via `b64enc`. |
+| 2026-07-14 | Multi-env `dev`/`staging` (values différenciées, secrets séparés). | Vérifié : dev = 1 replica, staging = 2 replicas ; mots de passe **distincts** (`dev-oc2024` vs `staging-Xk92mZ7q`). | staging tague l'image en **version sémantique 1.0.0**, dev en `latest`. Différences documentées dans `docs/DEPLOIEMENT_K8S.md`. |

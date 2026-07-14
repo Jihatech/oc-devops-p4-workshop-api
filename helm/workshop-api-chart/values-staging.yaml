@@ -1,0 +1,24 @@
+# Environnement STAGING : 2 replicas, davantage de ressources, image en version sémantique.
+app:
+  replicas: 2
+  image:
+    tag: "1.0.0"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 384Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+
+db:
+  # Secret DISTINCT de dev (aucun credential partagé entre environnements)
+  username: postgres
+  password: staging-Xk92mZ7q
+  resources:
+    requests:
+      cpu: 150m
+      memory: 192Mi
+    limits:
+      cpu: 500m
+      memory: 384Mi

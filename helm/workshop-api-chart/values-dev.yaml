@@ -1,0 +1,24 @@
+# Environnement DEV : 1 replica, ressources limitées, image "latest".
+app:
+  replicas: 1
+  image:
+    tag: latest
+  resources:
+    requests:
+      cpu: 50m
+      memory: 192Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+
+db:
+  # Secret PROPRE à l'environnement dev (différent de staging)
+  username: postgres
+  password: dev-oc2024
+  resources:
+    requests:
+      cpu: 50m
+      memory: 96Mi
+    limits:
+      cpu: 250m
+      memory: 192Mi
