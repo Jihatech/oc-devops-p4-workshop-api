@@ -1,5 +1,51 @@
 # Workshop Organizer Web API
 
+> ## 🏭 Industrialisation DevOps — Projet 4 OpenClassrooms
+>
+> **GitHub autorisé par le mentor** en remplacement de GitLab (GitHub Actions + GHCR + semantic-release).
+> Dépôt : `Jihatech/oc-devops-p4-workshop-api`.
+
+### Stack & prérequis
+JDK 21 (Temurin) · Gradle (wrapper) · Spring Boot 3.2.4 · PostgreSQL 13 · Docker.
+
+### Lancement local
+```bash
+./gradlew bootRun          # nécessite un PostgreSQL sur localhost:5432 (workshopsdb)
+# ou tout-en-un via Docker :
+docker compose up -d        # API sur http://localhost:8080, PostgreSQL + volume + healthcheck
+```
+
+### Conteneurisation (Exercice 1)
+- `Dockerfile` **multi-stage** : build Gradle (JDK) → image finale **JRE** (`eclipse-temurin:21-jre`).
+- `docker-compose.yml` : services **app + PostgreSQL**, variables `SPRING_DATASOURCE_*`, **volume nommé**,
+  **healthcheck** `pg_isready` + `depends_on: condition: service_healthy`.
+
+### Tests (Exercice 2)
+```bash
+./run-tests.sh   # auto-détection du projet, tests Gradle, rapport JUnit XML dans test-results/
+```
+
+### CI/CD — GitHub Actions (Exercice 2)
+- Workflow **réutilisable** `.github/workflows/ci-reusable.yml` (`workflow_call`) appelé par `ci.yml`
+  (sur `push` et `pull_request`). Choix : workflow réutilisable *identique dans chaque repo*, adapté
+  au projet par auto-détection Java/Angular.
+- **test** : `run-tests.sh` → rapport JUnit intégré (`mikepenz/action-junit-report`) + artefact + cache Gradle.
+- **build** : image poussée sur **GHCR** `ghcr.io/jihatech/oc-devops-p4-workshop-api`, tag `branche-sha`.
+- **release** : **semantic-release** (auto sur push `main`) → release GitHub + `CHANGELOG.md`,
+  image taguée en **version sémantique**, version synchronisée dans `build.gradle`.
+
+### Déploiement Kubernetes & Helm (Exercice 3)
+Voir **[docs/DEPLOIEMENT_K8S.md](docs/DEPLOIEMENT_K8S.md)** : manifestes `k8s/`, chart `helm/workshop-api-chart/`
+(app + PostgreSQL), environnements `dev`/`staging` (values + secrets distincts).
+
+### Sécurité
+Aucun secret versionné : identifiants de démo en local, `GITHUB_TOKEN` intégré en CI, `Secret` Kubernetes par namespace.
+
+### Journal de l'IA
+Voir **[docs/JOURNAL_IA.md](docs/JOURNAL_IA.md)**.
+
+---
+
 Welcome to the Workshop Organizer Web API! This application is designed to facilitate workshops open to the public. Whether you’re organizing coding bootcamps, art classes, or any other type of workshop, this API will help manage registrations, schedules, and resources.
 
 ## Table of Contents
